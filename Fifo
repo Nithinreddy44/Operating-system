@@ -1,0 +1,54 @@
+/fifo/
+#include <stdio.h>
+#define MAX_FRAMES 3
+
+int main() {
+    int frames[MAX_FRAMES], page_faults = 0, num_frames = 0, num_pages = 8;
+    int page_references[] = {4, 1, 2, 4, 3, 2, 1, 5};
+    int i, j, k;
+
+    // Initialize all frames to -1 to indicate that they are empty
+    for (i = 0; i < MAX_FRAMES; i++) {
+        frames[i] = -1;
+    }
+
+    // Iterate through the page reference sequence
+    for (i = 0; i < num_pages; i++) {
+        int page = page_references[i];
+        int page_found = 0;
+
+        // Check if the page is already in a frame
+        for (j = 0; j < MAX_FRAMES; j++) {
+            if (frames[j] == page) {
+                page_found = 1;
+                break;
+            }
+        }
+
+        // If the page is not in a frame, replace the oldest frame with the new page
+        if (!page_found) {
+            frames[num_frames % MAX_FRAMES] = page;
+            num_frames++;
+            page_faults++;
+        }
+
+        // Print the current state of the frames
+        printf("Page %d: [", page);
+        for (k = 0; k < MAX_FRAMES; k++) {
+            if (frames[k] == -1) {
+                printf(" ");
+            } else {
+                printf("%d", frames[k]);
+            }
+            if (k < MAX_FRAMES - 1) {
+                printf("|");
+            }
+        }
+        printf("]\n");
+    }
+
+    // Print the total number of page faults
+    printf("Total page faults: %d\n", page_faults);
+
+    return 0;
+}
