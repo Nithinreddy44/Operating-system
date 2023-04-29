@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define NUM_PROCESSES 4
+
+typedef struct process {
+    char name[3];
+    int burst_time;
+    int completion_time;
+    int waiting_time;
+    int turnaround_time;
+} process;
+
+int main() {
+    process processes[NUM_PROCESSES] = {
+        {"P1", 6, 0, 0, 0},
+        {"P2", 8, 0, 0, 0},
+        {"P3", 7, 0, 0, 0},
+        {"P4", 3, 0, 0, 0}
+    };
+    
+    // Sort processes by burst time using selection sort
+    for (int i = 0; i < NUM_PROCESSES - 1; i++) {
+        int min_idx = i;
+        for (int j = i + 1; j < NUM_PROCESSES; j++) {
+            if (processes[j].burst_time < processes[min_idx].burst_time) {
+                min_idx = j;
+            }
+        }
+        process temp = processes[i];
+        processes[i] = processes[min_idx];
+        processes[min_idx] = temp;
+    }
+    
+    // Calculate completion time, waiting time, and turnaround time
+    int completion_time = 0;
+    int total_waiting_time = 0;
+    int total_turnaround_time = 0;
+    for (int i = 0; i < NUM_PROCESSES; i++) {
+        completion_time += processes[i].burst_time;
+        processes[i].completion_time = completion_time;
+        processes[i].turnaround_time = completion_time;
+        processes[i].waiting_time = completion_time - processes[i].burst_time;
+        total_waiting_time += processes[i].waiting_time;
+        total_turnaround_time += processes[i].turnaround_time;
+    }
+    
+    // Print results
+    printf("Process  Burst Time  Completion Time  Waiting Time  Turnaround Time\n");
+    for (int i = 0; i < NUM_PROCESSES; i++) {
+        printf("%s\t\t%d\t\t%d\t\t%d\t\t%d\n", processes[i].name, processes[i].burst_time,
+            processes[i].completion_time, processes[i].waiting_time, processes[i].turnaround_time);
+    }
+    printf("Average Waiting Time: %f\n", (float) total_waiting_time / NUM_PROCESSES);
+    printf("Average Turnaround Time: %f\n", (float) total_turnaround_time / NUM_PROCESSES);
+    
+    return 0;
+}
