@@ -1,0 +1,71 @@
+\\LRU\\
+Here is a C program that illustrates the page replacement method where the current least recently used element is replaced. The program also determines the number of page faults for the following test case:
+
+#include<stdio.h>
+int main()
+{
+    int i,j,k,n,fault=0;
+    printf("Enter no of pages:");
+    scanf("%d",&n);
+    int p[n],frame[3],flag=0,count=0;
+    printf("Enter page reference sequence:");
+    for(i=0;i<n;i++)
+        scanf("%d",&p[i]);
+    for(i=0;i<3;i++)
+        frame[i]=-1;
+    for(i=0;i<n;i++)
+    {
+        flag=0;
+        for(j=0;j<3;j++)
+        {
+            if(frame[j]==p[i])
+            {
+                flag=1;
+                break;
+            }
+        }
+        if(flag==0)
+        {
+            frame[count]=p[i];
+            count++;
+            fault++;
+            if(count==3)
+                count=0;
+        }
+    }
+    printf("Number of page faults:%d",fault);
+}
+
+OUTPUT:
+Enter no of pages:20
+Enter page reference sequence:1
+2
+3
+2
+1
+5
+2
+1
+6
+2
+5
+6
+3
+1
+3
+6
+1
+2
+4
+3
+Number of page faults:14
+--------------------------------
+Process exited after 38.82 seconds with return value 24
+Press any key to continue . . .
+
+
+
+
+
+
+
