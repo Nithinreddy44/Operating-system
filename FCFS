@@ -19,7 +19,7 @@ int main()
     printf("The average head movement is %.2f\n",(float)sum/n);
     return 0;
 }
-
+output;
 For your test case, you can input the following values:
 
 No of tracks: 5
