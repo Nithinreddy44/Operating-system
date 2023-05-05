@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <semaphore.h>
+
+#define N 5 /* Number of philosophers */
+
+pthread_t philosopher_threads[N];
+sem_t forks[N];
+sem_t mutex;
+
+void *philosopher(void *arg) {
+    int id = *(int *)arg;
+    int right = (id + 1) % N;
+    int left = (id + N - 1) % N;
+
+    while (1) {
+        printf("Philosopher %d is thinking...\n", id);
+        sleep(rand() % 10);
+
+        sem_wait(&mutex); /* Acquire the mutex */
+
+        sem_wait(&forks[left]); /* Acquire the left fork */
+        printf("Philosopher %d has acquired fork %d\n", id, left);
+
+        sem_wait(&forks[right]); /* Acquire the right fork */
+        printf("Philosopher %d has acquired fork %d\n", id, right);
+
+        sem_post(&mutex); /* Release the mutex */
+
+        printf("Philosopher %d is eating...\n", id);
+        sleep(rand() % 10);
+
+        sem_post(&forks[left]); /* Release the left fork */
+        printf("Philosopher %d has released fork %d\n", id, left);
+
+        sem_post(&forks[right]); /* Release the right fork */
+        printf("Philosopher %d has released fork %d\n", id, right);
+    }
+}
+
+int main() {
+    int i, ids[N];
+
+    /* Initialize the semaphores */
+    sem_init(&mutex, 0, 1);
+
+    for (i = 0; i < N; i++) {
+        sem_init(&forks[i], 0, 1);
+    }
+
+    /* Create the philosopher threads */
+    for (i = 0; i < N; i++) {
+        ids[i] = i;
+        pthread_create(&philosopher_threads[i], NULL, philosopher, &ids[i]);
+    }
+
+    /* Wait for the philosopher threads to finish */
+    for (i = 0; i < N; i++) {
+        pthread_join(philosopher_threads[i], NULL);
+    }
+
+    /* Destroy the semaphores */
+    sem_destroy(&mutex);
+
+    for (i = 0; i < N; i++) {
+        sem_destroy(&forks[i]);
+    }
+
+    return 0;
+}
+OUTPUT:
+Philosopher 0
