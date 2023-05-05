@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#define BUFFER_SIZE 25
+
+int main() {
+    int fd[2];
+    pid_t pid;
+
+    char write_message[BUFFER_SIZE] = "Hello, this is a message from the parent process!";
+    char read_message[BUFFER_SIZE];
+
+    if (pipe(fd) == -1) {
+        fprintf(stderr, "Pipe failed!");
+        return 1;
+    }
+
+    pid = fork();
+
+    if (pid < 0) {
+        fprintf(stderr, "Fork failed!");
+        return 1;
+    }
+
+    if (pid > 0) { /* Parent process */
+        close(fd[0]); /* Close the read end of the pipe */
+
+        write(fd[1], write_message, BUFFER_SIZE);
+        printf("Parent process wrote to the pipe: %s\n", write_message);
+
+        close(fd[1]); /* Close the write end of the pipe */
+    } else { /* Child process */
+        close(fd[1]); /* Close the write end of the pipe */
+
+        read(fd[0], read_message, BUFFER_SIZE);
+        printf("Child process read from the pipe: %s\n", read_message);
+
+        close(fd[0]); /* Close the read end of the pipe */
+    }
+
+    return 0;
+}
+OUTPUT:
+Parent process wrote to the pipe: Hello, this is a message from the parent process!
+Child process read from the pipe: Hello, this is a message from the parent process!
