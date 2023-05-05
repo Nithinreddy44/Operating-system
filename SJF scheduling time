@@ -1,0 +1,114 @@
+\\SJF
+#include <stdio.h>
+#include <stdlib.h>
+
+struct process {
+    int pid;
+    int arrival_time;
+    int burst_time;
+    int waiting_time;
+    int turnaround_time;
+    int completion_time;
+    int remaining_time;
+};
+
+void sjf(struct process p[], int n);
+
+int main() {
+    int n, i;
+
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    struct process p[n];
+
+    // Input process details
+    for (i = 0; i < n; i++) {
+        p[i].pid = i + 1;
+
+        printf("Enter arrival time for process %d: ", p[i].pid);
+        scanf("%d", &p[i].arrival_time);
+
+        printf("Enter burst time for process %d: ", p[i].pid);
+        scanf("%d", &p[i].burst_time);
+
+        p[i].remaining_time = p[i].burst_time;
+    }
+
+    sjf(p, n);
+
+    return 0;
+}
+
+void sjf(struct process p[], int n) {
+    int i, j, t, min_bt, complete = 0;
+    float avg_waiting_time = 0, avg_turnaround_time = 0;
+
+    // Sort processes based on arrival time
+    for (i = 0; i < n - 1; i++) {
+        for (j = i + 1; j < n; j++) {
+            if (p[i].arrival_time > p[j].arrival_time) {
+                struct process temp = p[i];
+                p[i] = p[j];
+                p[j] = temp;
+        }
+    }
+    
+    
+    OUTPUT:
+    Enter the number of processes: 3
+Enter burst time for process 1: 5
+Enter burst time for process 2: 2
+Enter burst time for process 3: 8
+PID     Burst Time      Waiting Time    Turnaround Time
+2       2
+
+
+    printf("\nGantt chart:\n");
+    printf("--------------------------------------------------------\n");
+    printf("| Process | Arrival Time | Burst Time | Completion Time |\n");
+    printf("--------------------------------------------------------\n");
+
+    t = p[0].arrival_time;
+
+    while (complete != n) {
+        min_bt = 9999;
+        int next_process = -1;
+
+        for (i = 0; i < n; i++) {
+            if (p[i].arrival_time <= t && p[i].remaining_time < min_bt && p[i].remaining_time > 0) {
+                min_bt = p[i].remaining_time;
+                next_process = i;
+            }
+        }
+
+        if (next_process == -1) {
+            t++;
+            continue;
+        }
+
+        p[next_process].remaining_time--;
+
+        if (p[next_process].remaining_time == 0) {
+            complete++;
+            p[next_process].completion_time = t + 1;
+            p[next_process].turnaround_time = p[next_process].completion_time - p[next_process].arrival_time;
+            p[next_process].waiting_time = p[next_process].turnaround_time - p[next_process].burst_time;
+
+            avg_waiting_time += p[next_process].waiting_time;
+            avg_turnaround_time += p[next_process].turnaround_time;
+
+            printf("|    P%d   |       %d       |      %d     |        %d       |\n", p[next_process].pid, p[next_process].arrival_time, p[next_process].burst_time, p[next_process].completion_time);
+        }
+
+        t++;
+    }
+
+    printf("--------------------------------------------------------\n");
+
+    avg_waiting_time /= n;
+    avg_turnaround_time /= n;
+
+    printf("\nAverage waiting time = %.2f\n", avg_waiting_time);
+    printf("Average turnaround time = %.2f\n", avg_turnaround_time);
+}
