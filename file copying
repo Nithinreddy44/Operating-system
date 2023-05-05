@@ -1,0 +1,38 @@
+#include <stdio.h>
+
+int main() {
+   FILE *source_file, *target_file;
+   char source_filename[] = "source_file.txt";
+   char target_filename[] = "target_file.txt";
+   char ch;
+
+   // Open source file
+   source_file = fopen(source_filename, "r");
+   if (source_file == NULL) {
+      printf("Error opening source file.\n");
+      return 1;
+   }
+
+   // Open target file
+   target_file = fopen(target_filename, "w");
+   if (target_file == NULL) {
+      printf("Error opening target file.\n");
+      fclose(source_file);
+      return 1;
+   }
+
+   // Copy contents of source file to target file
+   while ((ch = fgetc(source_file)) != EOF) {
+      fputc(ch, target_file);
+   }
+
+   printf("File copied successfully.\n");
+
+   // Close files
+   fclose(source_file);
+   fclose(target_file);
+
+   return 0;
+}
+output:
+File copied successfully.
