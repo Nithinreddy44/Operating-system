@@ -1,69 +1,79 @@
 //bankaralgorithm//
 #include <stdio.h>
 
+float balance = 1000.00; // initial balance
+
 int main() {
-    int processes = 4;
-    int resources = 3;
-    int available[resources] = {9, 3, 6};
-    int claim[processes][resources] = {
-        {3, 2, 2},
-        {6, 1, 3},
-        {3, 1, 4},
-        {4, 2, 2}
-    };
-    int allocation[processes][resources] = {
-        {1, 0, 0},
-        {6, 1, 2},
-        {2, 1, 1},
-        {0, 0, 2}
-    };
-    int work[resources];
-    int finish[processes];
-    int i, j, k, safe, count;
+   int option;
+   float amount;
 
-    // Initialize work to available
-    for (i = 0; i < resources; i++) {
-        work[i] = available[i];
-    }
+   printf("Welcome to our banking system.\n");
 
-    // Initialize finish to false for all processes
-    for (i = 0; i < processes; i++) {
-        finish[i] = 0;
-    }
+   while (1) { // infinite loop until the user exits
+      printf("1. Deposit money.\n");
+      printf("2. Withdraw money.\n");
+      printf("3. Check balance.\n");
+      printf("4. Exit.\n");
 
-    // Loop until all processes are finished or a safe sequence is found
-    safe = 0;
-    count = 0;
-    while (!safe && count < processes) {
-        safe = 1;
-        for (i = 0; i < processes; i++) {
-            if (!finish[i]) {
-                // Check if process i can be completed with current resources
-                for (j = 0; j < resources; j++) {
-                    if (claim[i][j] - allocation[i][j] > work[j]) {
-                        safe = 0;
-                        break;
-                    }
-                }
-                if (safe) {
-                    // Mark process i as finished and release its resources
-                    finish[i] = 1;
-                    for (k = 0; k < resources; k++) {
-                        work[k] += allocation[i][k];
-                    }
-                    count++;
-                }
+      printf("Enter your option: ");
+      scanf("%d", &option);
+
+      switch (option) {
+         case 1: // Deposit money
+            printf("Enter amount to deposit: ");
+            scanf("%f", &amount);
+            balance += amount;
+            printf("Deposit of $%.2f successful. Current balance: $%.2f\n", amount, balance);
+            break;
+
+         case 2: // Withdraw money
+            printf("Enter amount to withdraw: ");
+            scanf("%f", &amount);
+            if (balance < amount) {
+               printf("Insufficient balance. Please try again.\n");
+            } else {
+               balance -= amount;
+               printf("Withdrawal of $%.2f successful. Current balance: $%.2f\n", amount, balance);
             }
-        }
-    }
+            break;
 
-    // Print the result
-    if (count == processes) {
-        printf("System is in a safe state\n");
-    } else {
-        printf("System is in an unsafe state\n");
-    }
+         case 3: // Check balance
+            printf("Current balance: $%.2f\n", balance);
+            break;
 
-    return 0;
+         case 4: // Exit
+            printf("Thank you for using our banking system. Goodbye!\n");
+            return 0;
+
+         default: // Invalid option
+            printf("Invalid option. Please try again.\n");
+            break;
+      }
+   }
+
+   return 0;
 }
+output:
+Welcome to our banking system.
+1. Deposit money.
+2. Withdraw money.
+3. Check balance.
+4. Exit.
+Enter your option: 1
+Enter amount to deposit: 500
+Deposit of $500.00 successful. Current balance: $1500.00
+1. Deposit money.
+2. Withdraw money.
+3. Check balance.
+4. Exit.
+Enter your option: 2
+Enter amount to withdraw: 2000
+Insufficient balance. Please try again.
+1. Deposit money.
+2. Withdraw money.
+3. Check balance.
+4. Exit.
+Enter your option: 2
+Enter amount to withdraw: 800
+Withdrawal of $800.00 successful. Current balance: $
 
