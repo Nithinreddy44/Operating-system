@@ -1,0 +1,14 @@
+echo "enter the number"
+read n
+if [`expr $n % 2`==0] 
+then
+echo "$n is even"
+else
+echo "$n is odd"
+fi
+
+output:
+enter the number
+4
+main.bash: line 8: [0==0]: command not found
+4 is odd
