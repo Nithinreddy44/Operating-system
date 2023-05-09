@@ -1,0 +1,12 @@
+echo -n "enter the year="
+read year_checker
+if[`expr $year_checker % 4`-eq0]
+`then`
+echo "$year_checker is a leap year"
+`else`
+echo "$year_checker is not a leap year"
+`fi`
+
+output
+enter the year=20044
+20044 is a leap year
