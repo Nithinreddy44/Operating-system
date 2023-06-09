@@ -1,0 +1,39 @@
+INPUT:
+#include<stdio.h>
+#include<stdlib.h>
+int main()
+{
+	int RQ[100],i,n,totalheadmovement,initial;
+	printf("enter the number of requests:\n");
+	scanf("%d",&n);
+	printf("enter the requests sequences:\n");
+	for(i=0;i<n;i++)
+	scanf("%d",&RQ[i]);
+	printf("enter the initial head position:\n");
+	scanf("%d",&initial);
+	for(i=0;i<n;i++)
+	{
+		totalheadmovement=totalheadmovement+abs(RQ[i]-initial);
+		initial=RQ[i];
+	}
+	printf("total head movement is %d",totalheadmovement);
+	return 0;
+}
+OUTPUT:
+enter the number of requests:
+8
+enter the requests sequences:
+98
+183
+37
+122
+14
+124
+65
+67
+enter the initial head position:
+53
+total head movement is 641
+--------------------------------
+Process exited after 34.28 seconds with return value 0
+Press any key to continue . . .
